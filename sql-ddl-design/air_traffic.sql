@@ -8,7 +8,8 @@ CREATE DATABASE air_traffic;
 \c air_traffic
 
 CREATE TABLE
-    passengers (
+    passengers 
+    (
         id SERIAL PRIMARY KEY,
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL
@@ -17,44 +18,45 @@ CREATE TABLE
 CREATE TABLE
     airlines (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE);
 
-CREATE TABLE
-    flight_times (
-        id SERIAL PRIMARY KEY,
-        depart_id TIMESTAMP,
-        arrive_id TIMESTAMP
-    );
-
-
 -- multiple tickets from different airlines can share same seat names
 CREATE TABLE
-    seats (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE);
+    seats 
+    (
+        id SERIAL PRIMARY KEY, 
+        name TEXT NOT NULL UNIQUE, 
+        airline_id INTEGER REFERENCES airlines
+    );
 
 CREATE TABLE
     countries (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE);
 
 -- accounts for countries that no longer exist
 CREATE TABLE
-    destinations (
+    destinations 
+    (
         id SERIAL PRIMARY KEY,
         country_id INTEGER REFERENCES countries ON DELETE CASCADE,
         city TEXT NOT NULL
     );
 
 CREATE TABLE
-    flights (
+    flight_times 
+    (
         id SERIAL PRIMARY KEY,
-        flight_time_id INTEGER REFERENCES flight_times ON DELETE SET NULL,
-        airline_id INTEGER REFERENCES airlines ON DELETE CASCADE,
-        from_id INTEGER REFERENCES destinations,
-        to_id INTEGER REFERENCES destinations
+        depart TIMESTAMP,
+        arrive TIMESTAMP
     );
 
 CREATE TABLE
-    tickets (
+    tickets 
+    (
         id SERIAL PRIMARY KEY,
+        airline_id INTEGER REFERENCES airlines,
+        from_id INTEGER REFERENCES destinations,
+        to_id INTEGER REFERENCES destinations,
+        flight_time_id INTEGER REFERENCES flight_times,
         passenger_id INTEGER REFERENCES passengers ON DELETE CASCADE,
-        seat_id INTEGER REFERENCES seats,
-        flight_id INTEGER REFERENCES flights ON DELETE CASCADE
+        seat_id INTEGER REFERENCES seats
     );
 
 INSERT INTO passengers
@@ -67,21 +69,10 @@ INSERT INTO airlines
 VALUES
 ('United');
 
-INSERT INTO times
-(time)
-VALUES
-('2018-04-08 09:00:00'),
-('2018-04-08 12:00:00');
-
-INSERT INTO flight_times
-(depart_id,arrive_id)
-VALUES
-(1,2);
-
 INSERT INTO seats
-(name)
+(name,airline_id)
 VALUES
-('33B');
+('33B',1);
 
 INSERT INTO countries
 (name)
@@ -94,12 +85,12 @@ VALUES
 (1,'Washington DC'),
 (1,'Seattle');
 
-INSERT INTO flights
-(flight_time_id,airline_id,from_id,to_id)
-VALUES 
-(1,1,1,2);
+INSERT INTO flight_times
+(depart,arrive)
+VALUES
+('2018-04-08 09:00:00','2018-04-08 12:00:00');
 
 INSERT INTO tickets
-(passenger_id,seat_id,flight_id)
+(airline_id,from_id,to_id,flight_time_id,passenger_id,seat_id)
 VALUES
-(1,1,1);
+(1,1,2,1,1,1);

@@ -7,45 +7,39 @@ CREATE DATABASE music;
 
 \c music
 
-CREATE TABLE "artists" 
+CREATE TABLE artists 
 (
   id SERIAL PRIMARY KEY,
   name TEXT UNIQUE NOT NULL
 );
 
-CREATE TABLE "albums" 
+CREATE TABLE producers
+(
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL
+);
+
+CREATE TABLE albums 
 (
   id SERIAL PRIMARY KEY,
   release_date DATE NOT NULL,
+  artist_id INTEGER REFERENCES artists,
   name TEXT NOT NULL
 );
 
-CREATE TABLE "producers" 
+CREATE TABLE songs 
 (
   id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL
-);
-
-CREATE TABLE "titles" 
-(
-  id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL
-);
-
-CREATE TABLE "songs" 
-(
-  id SERIAL PRIMARY KEY,
-  title_id INTEGER REFERENCES titles,
+  title TEXT NOT NULL,
   duration_in_seconds INTEGER CHECK(duration_in_seconds>0),
-  artist_id INTEGER REFERENCES artists ON DELETE SET NULL,
-  producer_id INTEGER REFERENCES producers ON DELETE SET NULL
+  album_id INTEGER REFERENCES albums ON DELETE SET NULL
 );
 
-CREATE TABLE "ablums_songs"
+CREATE TABLE producers_songs 
 (
   id SERIAL PRIMARY KEY,
-  album_id INTEGER REFERENCES albums ON DELETE SET NULL,
-  song_id INTEGER REFERENCES songs ON DELETE SET NULL
+  producer_id INTEGER REFERENCES producers NOT NULL,
+  song_id INTEGER REFERENCES songs NOT NULL
 );
 
 INSERT INTO artists
@@ -53,31 +47,25 @@ INSERT INTO artists
 VALUES
 ('Hanson');
 
-INSERT INTO albums
-(name,release_date)
-VALUES
-('Middle of Nowhere','04-15-1997');
-
 INSERT INTO producers
 (name)
 VALUES
 ('Dust Brothers'),
 ('Stephen Lironi');
 
-INSERT INTO titles
-(name)
+INSERT INTO albums
+(name,release_date,artist_id)
 VALUES
-('MMMBop');
+('Middle of Nowhere','04-15-1997',1);
 
 INSERT INTO songs
-(title_id,duration_in_seconds,artist_id,producer_id)
+(title,duration_in_seconds,album_id)
 VALUES
-(1,238,1,1),
-(1,238,1,2)
+('MMMBop',238,1)
 ;
 
-INSERT INTO ablums_songs
-(album_id,song_id)
+INSERT INTO producers_songs
+(producer_id,song_id)
 VALUES
 (1,1),
-(1,2);
+(2,1);

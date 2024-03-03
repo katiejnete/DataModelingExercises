@@ -46,15 +46,10 @@ CREATE TABLE refs
 CREATE TABLE matches 
 (
     id SERIAL PRIMARY KEY,
+    date DATE NOT NULL UNIQUE,
+    season_id INTEGER REFERENCES seasons,
     team1_id INTEGER REFERENCES teams ON DELETE SET NULL,
     team2_id INTEGER REFERENCES teams ON DELETE SET NULL
-);
-
-CREATE TABLE goals
-(
-    id SERIAL PRIMARY KEY,
-    match_id INTEGER REFERENCES matches  NOT NULL,
-    player_id INTEGER REFERENCES players ON DELETE SET NULL
 );
 
 CREATE TABLE refs_matches
@@ -64,9 +59,9 @@ CREATE TABLE refs_matches
     ref_id INTEGER REFERENCES refs ON DELETE SET NULL
 );
 
-CREATE TABLE seasons_matches
+CREATE TABLE goals
 (
     id SERIAL PRIMARY KEY,
-    season_id INTEGER REFERENCES seasons  NOT NULL,
-    match_id INTEGER  REFERENCES matches NOT NULL
+    match_id INTEGER REFERENCES matches  NOT NULL,
+    player_id INTEGER REFERENCES players ON DELETE SET NULL
 );

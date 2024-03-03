@@ -26,6 +26,7 @@ CREATE TABLE users
 (
     id SERIAL PRIMARY KEY,
     username VARCHAR(18) UNIQUE NOT NULL,
+    password TEXT NOT NULL,
     region_id INTEGER REFERENCES regions NOT NULL
 );
 
