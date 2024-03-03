@@ -36,7 +36,7 @@ CREATE TABLE "songs"
 (
   id SERIAL PRIMARY KEY,
   title_id INTEGER REFERENCES titles,
-  duration_in_seconds INTEGER,
+  duration_in_seconds INTEGER CHECK(duration_in_seconds>0),
   artist_id INTEGER REFERENCES artists ON DELETE SET NULL,
   producer_id INTEGER REFERENCES producers ON DELETE SET NULL
 );
